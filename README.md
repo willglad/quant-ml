@@ -60,6 +60,52 @@ With random selection, we expect a hit rate of 10%.
 ## Results
 |Model|Validation RMSE|Mean IC|Median IC|Positive IC Days|Top-stock hit rate|
 |--|---:|---:|---:|---:|---:|
-|Mean-return baseline|-|-|-|-|10%|
-|Ridge|-|-|-|-|-|
-|Gradient Boosting|-|-|-|-|-|
+|Mean-return baseline|0.1512|-|-|-|10%|
+|Ridge|0.1545|0.001671|-0.02975|0.4861|0.29880|
+|Gradient Boosting|0.1508|-0.0658|-0.0928|0.4541|0.1235|
+
+### Mean-return baseline:
+Achieved a validation RMSE of 0.1512, providing a useful benchmark for evaluating whether the models improve on simply predicting the average return. Its 10% top-stock hit rate represents the random-selection benchmark of a 10-stock universe.
+
+### Ridge:
+Performed worse than the baseline on RMSE, but produces a near zero mean IC and a 29.9% top-stock hit rate, suggesting some ability to rank the highest-performing stock despite limited overall predictive accuracy.
+
+### Gradient Boosting:
+Achieved the lowest RMSE, marginally outperforming the baseline. However, its mean IC was negative and its top-stock hit rate was only 12.4%, indicating that the improved RMSE did not translate reliably into cross-sectional ranking ability.
+
+## Critical Analysis
+
+### Limited Universe
+The use of only 10 stocks results in noisy cross-sectional estimates. Expanding the universe would provide more observation per date and potentially more reliable estimates of IC.
+
+### Survivorship Bias
+Using current S&P 500 constituents introduces survivorship bias becasue companies that left the index historically are not represented.
+
+### Overlapping Targets
+The 30-trading-day forward-return target produces overlapping observations, since consecutive trading days have a 29 day overlap in forward-return.
+
+### Transaction Costs
+The analysis does not incorporate transaction costs, which mitigates the predictive performance and as such cannot be interpreted directly as a trading strategy's profitability.
+
+### Feature Limitations
+The feature set is intentionally simple and relies primarily on momentum, volatility and volume information. Additional features may provide substantially more prediction power.
+
+### Model Limitations
+The dataset used is relatively small so highly complex models are not suitable. Increasing model complexity without increasing the amount/quality of the data could increase risk of overfitting.
+
+## Conclusion
+
+The project finds limited evidence that the selected market-derived features provide a robust out-of-sample signal for predicting cross-sectional stock returns. Whilst Gradient Boosting acheived a modest improvement over the baseline in RMSE, this did not translate into a positive IC. The best model achieved a 12.4% top-stock hit rate compared with a 10% random-selection benchmark, suggesting a small degree of predictive behaviour but insufficient evidence of a robust trading signal.
+
+The results highlight the importance of evaluating quantitative models using metrics aligned with their intended application, rather than relying on prediciton error. Future work would focus on expanding the stock universe, addressing survivorship bias, incorporating additional features and evaluating the predictions through a transaction cost aware portfolio backtest.
+
+## Tech Stack
+- Python 3.11
+- NumPy
+- Pandas
+- scikit-learn
+- Matplotlib
+- yfinance
+- Jupyter Notebook
+- Git
+
